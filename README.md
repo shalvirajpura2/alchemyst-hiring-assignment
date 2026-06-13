@@ -1,6 +1,22 @@
 # Event-Sourced AI Observability Console
 
-A deterministic observability dashboard designed to monitor and interface with a streaming AI agent. The console handles unstable WebSocket channels by treating all network payloads as inputs to a deterministic protocol engine, projecting all visual states strictly from an immutable event log.
+A deterministic, high-performance observability dashboard designed to monitor and interface with a streaming AI agent. The console handles unstable WebSocket channels by treating all network payloads as inputs to a deterministic protocol engine, projecting all visual states strictly from an immutable event log.
+
+---
+
+## Architecture Overview
+
+```mermaid
+graph TD
+    A[WebSocket Server] <-->|JSON Events & ACKs| B(WebSocket Transport Hook)
+    B -->|Ingest Raw Event| C{Protocol Engine}
+    C -->|Store Out-of-Order| D[Sequence Buffer Map]
+    C -->|Filter Duplicates| E[Processed Seq Set]
+    C -->|Commit Ordered Event| F[Immutable Event Log]
+    F -->|rAF Batched Updates| G(React UI Tree)
+    F -->|Context Snapshots| H[Diff Web Worker]
+    H -->|Compute Diffs Off-Thread| G
+```
 
 ---
 
@@ -8,6 +24,17 @@ A deterministic observability dashboard designed to monitor and interface with a
 
 *   `agent-console/`: The Next.js 14 frontend console (TypeScript, Vanilla CSS).
 *   `agent-server/`: The mock AI agent server simulating streaming and network failures.
+
+---
+
+## Key Observability Features
+
+1.  **Event-Sourced Architecture**: The UI state is projected deterministically by compiling the immutable event log. The transport layer has no direct state-modification side effects, preventing visual state drift.
+2.  **Sequence-Based Reordering**: Handles out-of-order packet delivery using a sequence buffer map and discards duplicates using a set of processed sequence numbers.
+3.  **Automatic Channel Recovery**: Performs a `RESUME` socket handshake sending the last committed sequence number, replaying missed packets seamlessly after connection drops.
+4.  **Off-Thread Web Worker Diffing**: Computes visual state changes between context snapshots inside a background Web Worker, ensuring zero main-thread blockage during heavy packet updates.
+5.  **rAF-Batched Rendering**: Batches high-throughput token rendering updates inside `requestAnimationFrame` hooks to prevent browser layout thrashing and reflows.
+6.  **Interactive Focus-Linking**: Integrates timeline log traces with chat cards, letting users click on chat blocks to highlight corresponding trace timeline actions instantly.
 
 ---
 
@@ -63,7 +90,7 @@ npm run test
 
 ---
 
-## Technical Architecture & Trade-Offs
+## Technical Engineering Trade-Offs
 
 ### 1. Sequence-Based Reordering & Deduplication
 Network packets can arrive out-of-order or duplicate in unstable channels. The Protocol Engine manages this using a linear queue and tracking mechanism:
