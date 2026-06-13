@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+/node_modules/
+/agent-console/node_modules/
+/agent-server/node_modules/
+
+# Next.js / Node build directories
+.next/
+/agent-console/.next/
+out/
+dist/
+build/
+coverage/
+
+# OS / System Files
+.DS_Store
+Thumbs.db
+*.pem
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local configuration and environment files
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vercel/
+
+# IDE / Editor config
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TypeScript build info and auto-generated types
+*.tsbuildinfo
+agent-console/next-env.d.ts
+next-env.d.ts
