@@ -158,3 +158,38 @@
     font-size: 0.7rem;
   }
 }
+
+.github_link {
+  font-family: inherit;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: 0.85rem;
+  color: var(--fg);
+  background: var(--accent-purple);
+  border: var(--border-thick);
+  padding: 8px 16px;
+  box-shadow: var(--shadow-flat-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+}
+
+.github_link:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-flat);
+}
+
+.github_link:active {
+  transform: translate(0, 0);
+  box-shadow: var(--shadow-flat-sm);
+}
+
+@media (max-height: 850px) {
+  .github_link {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+}

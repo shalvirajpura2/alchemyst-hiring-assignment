@@ -265,6 +265,14 @@ export default function Home() {
             Event-sourced agent console connection: <span className={styles.mono}>{ws_url}</span>
           </div>
         </div>
+        <a
+          href="https://github.com/shalvirajpura2/alchemyst-hiring-assignment"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.github_link}
+        >
+          GitHub
+        </a>
       </header>
 
       <div className={styles.dashboard_row}>
