@@ -1,88 +1,65 @@
-# Event-Sourced AI Observability Console
+# Deterministic AI Observability Console
 
-A deterministic, high-performance observability dashboard designed to monitor and interface with a streaming AI agent. The console handles unstable WebSocket channels by treating all network payloads as inputs to a deterministic protocol engine, projecting all visual states strictly from an immutable event log.
+A production-grade, event-sourced telemetry dashboard designed to monitor and control a streaming AI agent. The console handles unstable network channels by processing all socket payloads through a deterministic protocol engine, projecting all visual states strictly from an immutable event log.
 
 ---
 
-## Architecture Overview
+## System Architecture
 
 ```mermaid
 graph TD
-    A[WebSocket Server] <-->|JSON Events & ACKs| B(WebSocket Transport Hook)
+    A[WebSocket Server] <-->|JSON Stream & ACKs| B(WebSocket Transport Hook)
     B -->|Ingest Raw Event| C{Protocol Engine}
     C -->|Store Out-of-Order| D[Sequence Buffer Map]
     C -->|Filter Duplicates| E[Processed Seq Set]
     C -->|Commit Ordered Event| F[Immutable Event Log]
-    F -->|rAF Batched Updates| G(React UI Tree)
+    F -->|requestAnimationFrame Batching| G(React UI Tree)
     F -->|Context Snapshots| H[Diff Web Worker]
-    H -->|Compute Diffs Off-Thread| G
+    H -->|Calculate Diffs Off-Thread| G
 ```
 
 ---
 
 ## Directory Structure
-
-*   `agent-console/`: The Next.js 14 frontend console (TypeScript, Vanilla CSS).
-*   `agent-server/`: The mock AI agent server simulating streaming and network failures.
+*   `/agent-console`: Next.js 14 frontend console (TypeScript, Vanilla CSS, Neobrutalist design).
+*   `/agent-server`: Mock AI agent server (TypeScript, tsx runtime).
 
 ---
 
-## Key Observability Features
+## Core Engineering Highlights
 
-1.  **Event-Sourced Architecture**: The UI state is projected deterministically by compiling the immutable event log. The transport layer has no direct state-modification side effects, preventing visual state drift.
-2.  **Sequence-Based Reordering**: Handles out-of-order packet delivery using a sequence buffer map and discards duplicates using a set of processed sequence numbers.
-3.  **Automatic Channel Recovery**: Performs a `RESUME` socket handshake sending the last committed sequence number, replaying missed packets seamlessly after connection drops.
-4.  **Off-Thread Web Worker Diffing**: Computes visual state changes between context snapshots inside a background Web Worker, ensuring zero main-thread blockage during heavy packet updates.
-5.  **rAF-Batched Rendering**: Batches high-throughput token rendering updates inside `requestAnimationFrame` hooks to prevent browser layout thrashing and reflows.
-6.  **Interactive Focus-Linking**: Integrates timeline log traces with chat cards, letting users click on chat blocks to highlight corresponding trace timeline actions instantly.
+*   **100% Deterministic State Projection**: UI components run the immutable event log chronologically to derive state. The transport layer has no state-modification side effects, guaranteeing zero view drift.
+*   **Sequence-Based Reordering**: Buffers out-of-order packets (`seq > expected`) in a hash map and processes them recursively once missing packets arrive, maintaining chronological order.
+*   **Deduplication**: Drops duplicate sequence numbers in $O(1)$ time using a tracking set to prevent double-rendering.
+*   **Auto-Recovery & RESUME Handshake**: Handles unexpected connection drops by initiating a handshake with the last committed sequence number. The server replays missed packets, and the client filters them against its processed log.
+*   **Off-Thread Web Worker Diffing**: Isolates heavy structural object diff calculations (on 500KB+ database schemas) to a Web Worker, preserving a constant 60 FPS on the main UI thread.
+*   **rAF-Batched Rendering**: Batches high-frequency token updates inside `requestAnimationFrame` hooks to prevent browser layout thrashing and reflow bottlenecks.
+*   **Trace Focus-Linking**: Maps timeline logs to chat cards, letting users click on any chat message to highlight corresponding execution traces instantly.
+*   **Stale Socket Rejection**: Rejects callbacks from stale sockets during hot-reloads by tracking the active socket reference pointer.
 
 ---
 
 ## Quick Start
 
-### 1. Start the Mock Agent Server
-
-The server runs on port `4747`. You can run it via Docker or locally with Node.
-
-#### Option A: Running with Docker (Recommended)
-```bash
-cd agent-server
-docker build -t agent-server .
-docker run -p 4747:4747 agent-server             # Normal mode
-# OR
-docker run -p 4747:4747 agent-server --mode chaos  # Chaos mode
-```
-
-#### Option B: Running Locally with Node (Node.js >= 20 required)
+### 1. Start the Server (Port `4747`)
 ```bash
 cd agent-server
 npm install
-npm run build
-npm start                   # Normal mode
-# OR
-npm start -- --mode chaos   # Chaos mode
+npm run dev
+
+# Or with Docker:
+docker build -t agent-server .
+docker run -p 4747:4747 agent-server
 ```
 
----
-
-### 2. Start the Console Client
-
-The frontend client runs on port `3000` (or `3001` if port 3000 is occupied).
-
+### 2. Start the Console (Port `3000`/`3001`)
 ```bash
 cd agent-console
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) (or the port shown in terminal) in your browser.
-
----
-
-### 3. Running the Test Suite
-
-Run the Vitest unit tests inside the console directory to verify reordering, state recovery, and diffing engines:
-
+### 3. Run the Test Suite
 ```bash
 cd agent-console
 npm run test
@@ -90,27 +67,22 @@ npm run test
 
 ---
 
-## Technical Engineering Trade-Offs
+## Technical Design Decisions
 
-### 1. Sequence-Based Reordering & Deduplication
-Network packets can arrive out-of-order or duplicate in unstable channels. The Protocol Engine manages this using a linear queue and tracking mechanism:
-*   **Buffer Map (`Map<number, AgentEvent>`):** Arriving out-of-order packets (`seq > expected_seq`) are held in a hash map for O(1) insertions and lookups.
-*   **Processed Set (`Set<number>`):** Tracks all successfully committed packet sequence numbers to filter out duplicate frames in O(1) time.
-*   **Sequential Commit Loop:** When `seq === expected_seq` is received, it is committed to the event log. We then recursively check the buffer map for `expected_seq + 1`, committing buffered packets sequentially until a sequence gap is met.
+### Packet Reordering & Deduplication
+To handle unstable channels that shuffle or repeat packets:
+*   **O(1) Sequence Buffer**: Out-of-order frames (`seq > expected_seq`) are held in a key-value map.
+*   **Linear Commit Loop**: Upon receiving the expected sequence number, the client commits it and recursively checks the buffer for `expected_seq + 1` to resolve gaps.
+*   **Double-Render Prevention**: A sequence set tracks all committed sequence numbers. Any packet whose sequence number is already present is immediately discarded.
 
-### 2. Connection State Recovery (RESUME Handshake)
-If the WebSocket drops mid-stream, the client performs the following recovery sequence:
-*   **Event Log as Single Source of Truth:** Visual state is derived entirely by compiling the immutable event log. The socket transport does not update state directly.
-*   **Handshake Protocol:** Upon establishing a new connection, the client sends a `RESUME` frame containing the `last_committed_seq`.
-*   **Replay Ingestion:** The server replays all stream events after `last_committed_seq`. The client filters any re-sent frames using the duplicate processed set, resuming the live stream seamlessly.
+### RESUME Handshake Recovery
+To recover state after connection drops without repeating the entire conversation:
+*   The client sends a `RESUME` frame containing the `last_committed_seq`.
+*   The server replays only the sequence numbers following that ID.
+*   Any overlap is resolved by the client's deduplication set, resuming the live stream seamlessly.
 
-### 3. Race Condition & Multi-Tab Isolation
-To ensure robustness on production browsers:
-*   **Stale Socket Rejection:** In React's strict mode or hot-reload cycles, multiple WebSockets may mount concurrently. All event callbacks match the source socket object against the active reference pointer (`socket === ws_ref.current`). Callbacks from stale sockets are rejected.
-*   **Single-Client Lockout:** The mock server disconnects older sessions when a new client connects. The client detects the socket closure code `1000` and reason `replaced` inside `onclose`, immediately stopping automatic reconnection loops on background tabs.
-
-### 4. Layout Reflow Prevention
-Streaming text updates often trigger layout thrashing and DOM reflow. The chat interface mitigates this by projecting raw events into distinct block types:
-*   **Block Isolation:** The parser organizes incoming data into `text`, `tool`, and `error` blocks.
-*   **Freeze-on-Call:** When a tool call is initiated, the current text block reference is set to null, freezing its content. A new pending tool block is appended.
-*   **Append-on-Resume:** When the tool finishes and token streaming resumes, the console starts a new text block below the tool block, leaving preceding blocks untouched and avoiding content layout shifts.
+### Layout Reflow Mitigation
+High-throughput token streams frequently trigger browser repaint bottlenecking:
+*   **Block Partitioning**: Tokens are grouped into static `text` and `tool` block nodes.
+*   **State Freezing**: When a tool call starts, the text block reference is frozen to prevent layout shifts.
+*   **Append-on-Resume**: Resuming tokens start a new block below the tool card, leaving preceding nodes untouched.
