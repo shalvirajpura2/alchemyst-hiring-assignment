@@ -1,0 +1,214 @@
+.container {
+  background: var(--bg-card);
+  border: var(--border-thick);
+  border-radius: 0px;
+  padding: 20px 24px;
+  box-shadow: var(--shadow-flat);
+  font-family: var(--font-mono), monospace;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.container:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-flat-lg);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: var(--border-thick);
+  padding-bottom: 14px;
+}
+
+.title_container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status_indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: var(--border-thick);
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--fg);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn_connect,
+.btn_disconnect,
+.btn_reset {
+  border: var(--border-thick);
+  color: var(--fg);
+  padding: 6px 16px;
+  font-size: 0.75rem;
+  font-family: inherit;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--shadow-flat-sm);
+  transition: all 0.1s ease;
+}
+
+.btn_connect {
+  background: #ffffff;
+}
+
+.btn_connect:hover {
+  background: var(--accent-green);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.btn_connect:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+.btn_disconnect {
+  background: #ffffff;
+}
+
+.btn_disconnect:hover {
+  background: var(--accent-red);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.btn_disconnect:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+.btn_reset {
+  background: #ffffff;
+}
+
+.btn_reset:hover {
+  background: var(--accent-purple);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.btn_reset:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+.btn_auto_test {
+  border: var(--border-thick);
+  color: var(--fg);
+  padding: 6px 16px;
+  font-size: 0.75rem;
+  font-family: inherit;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--shadow-flat-sm);
+  transition: all 0.1s ease;
+  background: var(--accent-yellow);
+}
+
+.btn_auto_test:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.btn_auto_test:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+.btn_auto_test:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.metrics_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.metric_card {
+  background: #ffffff;
+  border: var(--border-thick);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--shadow-flat-sm);
+  transition: all 0.1s ease;
+}
+
+.metric_card:hover {
+  background: #fafafa;
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.metric_label {
+  font-size: 0.65rem;
+  color: var(--muted-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 800;
+}
+
+.metric_value {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--fg);
+}
+
+.metric_unit {
+  font-size: 0.7rem;
+  color: var(--muted-text);
+  font-weight: 700;
+}
+
+/* Height-based responsive rules for laptops and small viewports */
+@media (max-height: 850px) {
+  .container {
+    padding: 8px 16px;
+  }
+  .header {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+  }
+  .title {
+    font-size: 0.85rem;
+  }
+  .actions {
+    gap: 6px;
+  }
+  .btn_connect,
+  .btn_disconnect,
+  .btn_reset {
+    padding: 3px 8px;
+    font-size: 0.65rem;
+  }
+  .metrics_grid {
+    gap: 8px;
+  }
+  .metric_card {
+    padding: 6px 10px;
+    gap: 2px;
+  }
+  .metric_value {
+    font-size: 1.05rem;
+  }
+}

@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Neobrutalism Design System */
+  --bg-canvas: #faf8f5;            /* Soft cream canvas background */
+  --bg-card: #ffffff;              /* Core white card background */
+  --fg: #000000;                   /* Saturated deep black text */
+  --border-thick: 2px solid #000000;
+  --border-thin: 1px solid #000000;
+  
+  /* High Saturated Accents */
+  --accent-purple: #c084fc;        /* Lavender/Purple */
+  --accent-yellow: #fde047;        /* Warning/Caution yellow */
+  --accent-green: #4ade80;         /* Success mint green */
+  --accent-red: #f87171;           /* Error coral red */
+  --accent-blue: #60a5fa;          /* Neutral blue */
+  --accent-orange: #ffa94d;        /* Secondary orange */
+  
+  --secondary-text: #27272a;       /* Dark charcoal */
+  --muted-text: #52525b;           /* Slate grey */
+  
+  --shadow-flat: 4px 4px 0px 0px #000000;
+  --shadow-flat-lg: 6px 6px 0px 0px #000000;
+  --shadow-flat-sm: 2px 2px 0px 0px #000000;
+  
+  --font-sans: 'Outfit', 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-canvas);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Global scrollbars for Neobrutalist UI (highly defined) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-left: var(--border-thin);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--fg);
+  border: 1px solid #ffffff;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* Hard grid lines for infrastructure visual style */
+.neobrutal_grid {
+  background-image: radial-gradient(var(--fg) 1.2px, transparent 1.2px);
+  background-size: 20px 20px;
+}

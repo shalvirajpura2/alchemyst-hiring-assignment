@@ -1,0 +1,160 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+  background-color: var(--bg-canvas);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.1) 1.2px, transparent 1.2px);
+  background-size: 20px 20px;
+  color: var(--fg);
+  padding: 24px;
+  gap: 20px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: var(--border-thick);
+  padding-bottom: 16px;
+  background: var(--bg-card);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-flat);
+  padding: 18px 24px;
+}
+
+.title_container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--fg);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 0.825rem;
+  color: var(--muted-text);
+  font-weight: 600;
+}
+
+.mono {
+  font-family: var(--font-mono), monospace;
+  color: var(--fg);
+  background: var(--accent-yellow);
+  padding: 4px 10px;
+  border: var(--border-thick);
+  box-shadow: var(--shadow-flat-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.dashboard_row {
+  flex-shrink: 0;
+}
+
+.panels_grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 360px 1fr 420px;
+  gap: 20px;
+  min-height: 0;
+}
+
+.timeline_panel,
+.chat_panel,
+.context_panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panel_header {
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--fg);
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  padding-left: 2px;
+}
+
+.panel_body {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg-card);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-flat);
+  overflow: hidden;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.panel_body:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-flat-lg);
+}
+
+/* Responsiveness */
+@media (max-width: 1400px) {
+  .panels_grid {
+    grid-template-columns: 310px 1fr 360px;
+    gap: 16px;
+  }
+  .container {
+    padding: 16px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .panels_grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 350px 500px 350px;
+    overflow-y: auto;
+  }
+  
+  .container {
+    overflow-y: auto;
+    height: auto;
+    max-height: none;
+  }
+  
+  .panels_grid {
+    height: auto;
+  }
+}
+
+/* Height-based responsive rules for laptops and small viewports */
+@media (max-height: 850px) {
+  .container {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+  .header {
+    padding: 10px 16px;
+  }
+  .title {
+    font-size: 1.2rem;
+  }
+  .subtitle {
+    font-size: 0.75rem;
+  }
+  .mono {
+    padding: 2px 6px;
+    font-size: 0.75rem;
+  }
+  .panels_grid {
+    gap: 10px;
+  }
+  .panel_header {
+    margin-bottom: 4px;
+    font-size: 0.7rem;
+  }
+}

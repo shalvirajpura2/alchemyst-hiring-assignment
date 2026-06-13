@@ -1,0 +1,246 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-card);
+  overflow: hidden;
+  font-family: var(--font-mono), monospace;
+}
+
+.filter_bar {
+  padding: 16px;
+  border-bottom: var(--border-thick);
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.search_input {
+  width: 100%;
+  background: #ffffff;
+  border: var(--border-thick);
+  border-radius: 0;
+  padding: 8px 12px;
+  color: var(--fg);
+  font-size: 0.8rem;
+  outline: none;
+  font-family: inherit;
+  font-weight: 700;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search_input:focus {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.filter_buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filter_btn {
+  background: #ffffff;
+  border: var(--border-thick);
+  color: var(--fg);
+  padding: 4px 8px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: var(--shadow-flat-sm);
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+}
+
+.filter_btn:hover {
+  background: #f1f5f9;
+  transform: translate(-1.5px, -1.5px);
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.filter_btn:active {
+  transform: translate(1.5px, 1.5px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+.filter_active {
+  background: var(--accent-purple) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.scroll_container {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+.scroll_shim {
+  position: relative;
+  width: 100%;
+}
+
+.virtual_list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  will-change: transform;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: var(--border-thin);
+  gap: 12px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.1s ease;
+  user-select: none;
+  background: #ffffff;
+  font-weight: 700;
+}
+
+.row:hover {
+  background-color: #fafafa;
+}
+
+.row_highlighted {
+  background-color: var(--accent-blue) !important;
+  border-left: 6px solid #000000 !important;
+}
+
+.tool_row {
+  padding-left: 24px;
+}
+
+.seq_label {
+  color: var(--muted-text);
+  min-width: 32px;
+  font-weight: 800;
+}
+
+.type_badge_token,
+.type_badge_call,
+.type_badge_res,
+.type_badge_ctx,
+.type_badge_ping,
+.type_badge_err,
+.type_badge_end {
+  font-size: 0.6rem;
+  font-weight: 900;
+  padding: 2px 6px;
+  border: var(--border-thick);
+  box-shadow: 1.5px 1.5px 0px 0px #000000;
+  min-width: 72px;
+  text-align: center;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+.type_badge_token {
+  background: #e2e8f0;
+}
+
+.type_badge_call {
+  background: var(--accent-blue);
+}
+
+.type_badge_res {
+  background: var(--accent-green);
+}
+
+.type_badge_ctx {
+  background: var(--accent-purple);
+}
+
+.type_badge_ping {
+  background: var(--accent-yellow);
+}
+
+.type_badge_err {
+  background: var(--accent-red);
+}
+
+.type_badge_end {
+  background: var(--accent-orange);
+}
+
+.details {
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.details_mono {
+  color: var(--fg);
+  font-family: var(--font-mono), monospace;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.details_err {
+  color: #991b1b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  font-weight: 800;
+}
+
+.summary_text {
+  flex: 1;
+}
+
+.expand_arrow {
+  color: var(--fg);
+  font-size: 0.6rem;
+}
+
+.expanded_tokens {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  background: #ffffff;
+  border: var(--border-thick);
+  border-radius: 0;
+  padding: 12px 16px;
+  color: var(--fg);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  z-index: 10;
+  box-shadow: var(--shadow-flat-lg);
+  margin-top: 36px;
+  font-weight: 600;
+}
+
+/* Height-based responsive rules for laptops and small viewports */
+@media (max-height: 850px) {
+  .filter_bar {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  .search_input {
+    padding: 4px 8px;
+    font-size: 0.725rem;
+  }
+  .filter_btn {
+    padding: 2px 5px;
+    font-size: 0.575rem;
+  }
+  .row {
+    padding: 0 10px;
+    gap: 6px;
+  }
+}
