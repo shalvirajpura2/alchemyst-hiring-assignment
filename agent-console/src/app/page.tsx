@@ -31,6 +31,9 @@ export default function Home() {
   const [active_highlight_seqs, set_active_highlight_seqs] = useState<number[] | null>(null);
   const [active_chat_block_id, set_active_chat_block_id] = useState<string | null>(null);
 
+  // Transport WebSocket URL configuration
+  const ws_url = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4747/ws";
+
   // Initialize the transport-only WebSocket connection
   const {
     connection_state,
@@ -40,7 +43,7 @@ export default function Home() {
     disconnect,
     simulate_drop,
   } = useWebSocket({
-    ws_url: process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4747/ws",
+    ws_url,
     protocol_engine,
   });
 
@@ -240,8 +243,9 @@ export default function Home() {
   };
 
   const handle_reset = () => {
-    // Call server reset endpoint
-    fetch("http://localhost:4747/reset")
+    // Call server reset endpoint dynamically based on ws_url
+    const reset_url = ws_url.replace(/^ws/, "http").replace(/\/ws$/, "") + "/reset";
+    fetch(reset_url)
       .then(() => {
         protocol_engine.reset_session();
       })
@@ -258,7 +262,7 @@ export default function Home() {
         <div className={styles.title_container}>
           <h1 className={styles.title}>Alchemyst AI Observability Node</h1>
           <div className={styles.subtitle}>
-            Event-sourced agent console connection: <span className={styles.mono}>ws://localhost:4747/ws</span>
+            Event-sourced agent console connection: <span className={styles.mono}>{ws_url}</span>
           </div>
         </div>
       </header>

@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd agent-console && npm install && npm run build",
-  "outputDirectory": "agent-console/.next",
-  "installCommand": "npm install -g pnpm && pnpm install"
-}

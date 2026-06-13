@@ -11,7 +11,7 @@ import type { ServerMode } from "./types.js";
 
 function parseArgs(args: string[]): { mode: ServerMode; port: number } {
   let mode: ServerMode = "normal";
-  let port = 4747;
+  let port = process.env.PORT ? parseInt(process.env.PORT, 10) : 4747;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--mode" && i + 1 < args.length) {
