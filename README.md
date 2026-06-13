@@ -66,6 +66,10 @@ npm run test
 ```
 
 ---
+## Demo Video
+[Watch the project demo on YouTube](https://youtu.be/Pgg1K6MVOAI)
+
+---
 
 ## Technical Design Decisions
 
