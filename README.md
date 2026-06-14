@@ -3,6 +3,11 @@
 A production-grade, event-sourced telemetry dashboard designed to monitor and control a streaming AI agent. The console handles unstable network channels by processing all socket payloads through a deterministic protocol engine, projecting all visual states strictly from an immutable event log.
 
 ---
+## Demo Video
+[Watch the project demo on YouTube](https://youtu.be/Pgg1K6MVOAI)
+
+---
+
 
 ## System Architecture
 
@@ -64,11 +69,6 @@ npm run dev
 cd agent-console
 npm run test
 ```
-
----
-## Demo Video
-[Watch the project demo on YouTube](https://youtu.be/Pgg1K6MVOAI)
-
 ---
 
 ## Technical Design Decisions
